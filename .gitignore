@@ -1,0 +1,7 @@
+__pycache__/
+.venv/
+*.py[cod]
+.directory
+.DS_Store
+.~lock.*#
+.privacidad.local

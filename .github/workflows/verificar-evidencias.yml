@@ -1,0 +1,28 @@
+name: Verificar evidencias
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+
+      - name: Instalar herramientas PDF
+        run: sudo apt-get update && sudo apt-get install --yes poppler-utils
+
+      - name: Comprobar automatizador
+        run: python3 -m py_compile automatizacion/resolver_evidencias.py
+
+      - name: Validar entregables
+        run: python3 automatizacion/resolver_evidencias.py validar --todos
+
+      - name: Auditar privacidad
+        run: python3 automatizacion/resolver_evidencias.py auditar

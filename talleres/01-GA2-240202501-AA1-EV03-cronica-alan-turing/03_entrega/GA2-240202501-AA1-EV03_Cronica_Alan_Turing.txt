@@ -1,0 +1,57 @@
+ALAN TURING: THE QUIET MIND BEHIND MODERN COMPUTING
+
+A chronicle of curiosity, codes, and courage
+
+
+
+In September 1939, while Europe entered the Second World War, a quiet young mathematician arrived at Bletchley Park, Britain’s secret codebreaking center. His name was Alan Turing, and he faced a problem that seemed impossible: German Enigma messages changed their settings every day. His response to that challenge changed the history of computing.
+
+
+
+1912–1936  |  A CURIOUS AND INDEPENDENT MIND
+
+Alan Mathison Turing was born in London on June 23, 1912. As a boy, he showed a strong interest in numbers, science, and experiments. Later, he studied mathematics at King’s College, Cambridge. In formal photographs, he was clean-shaven, had short dark hair, and wore a simple suit and tie. He was tall and slim, and he often looked serious. People described him as shy and direct, but he was also curious, imaginative, humorous, and persistent. He enjoyed cycling and became a dedicated long-distance runner.
+
+In 1936, Turing published a paper about an abstract machine. The machine read symbols, followed precise rules, and solved problems one step at a time. His idea showed that one machine could perform many different tasks when it received different instructions. This concept became one of the foundations of theoretical computer science and programming.
+
+
+
+1939–1945  |  BREAKING IMPOSSIBLE CODES
+
+At Bletchley Park, Turing led Hut 8’s work on German naval Enigma. He did not solve the challenge alone. He collaborated with mathematicians, engineers, linguists, operators, and other specialists. Building on earlier Polish codebreaking work, Turing, Gordon Welchman, and the wider British team designed the Bombe. This electromechanical machine checked many possible Enigma settings. Turing also developed a statistical method called Banburismus. Their careful analysis helped the Allies read important messages about German submarines.
+
+Life at the secret center was intense. Turing worked for long hours, concentrated deeply, and questioned old methods. He sometimes behaved in an unconventional way; he even chained his tea mug to a radiator so that nobody used it. However, his unusual habits did not stop teamwork. When one idea failed, he tested another. In my view, his persistence, logical thinking, and creativity resembled the qualities of a good software analyst. He understood the problem, designed a process, tested results, and improved the solution.
+
+
+
+1945–1950  |  FROM THEORY TO SOFTWARE
+
+After the war, Turing joined the National Physical Laboratory. In 1945, he designed the Automatic Computing Engine, or ACE. It was an electronic computer design that stored instructions and data in memory. Progress was slow, so in 1948 he moved to the University of Manchester. There, he developed routines and documentation for early computers. His work connected mathematical ideas with practical programming.
+
+In 1950, Turing published “Computing Machinery and Intelligence.” He asked whether machines could think and described the imitation game, which later became known as the Turing Test. Once again, he transformed a complex question into a clear procedure that people could discuss and test.
+
+
+
+1952–1954  |  INJUSTICE AND LOSS
+
+His final years brought a painful injustice. In 1952, British authorities prosecuted Turing because he had a relationship with another man, which was illegal in Britain at that time. He accepted hormonal treatment instead of going to prison. On June 7, 1954, he died from cyanide poisoning at the age of 41; the inquest recorded a verdict of suicide. Decades later, the British government apologized for his treatment, and Queen Elizabeth II granted him a royal pardon in 2013.
+
+
+
+WHY HIS STORY MATTERS TO SOFTWARE DEVELOPERS
+
+Turing’s legacy remains important today. His ideas influenced algorithms, programmable computers, cybersecurity, and artificial intelligence. For students of Software Analysis and Development, his method offers a clear lesson: define the problem, divide it into smaller tasks, write precise instructions, test possible answers, and collaborate with a team. I believe Alan Turing was an iconic pioneer because he combined curiosity with disciplined work and used logical ideas to solve real problems. His achievements changed technology, while his life also showed why society must defend dignity, equality, and respect.
+
+
+
+SOURCES CONSULTED
+
+- Bletchley Park Trust. (n.d.). Alan Turing. https://bletchleypark.org.uk/wp-content/uploads/record_attachments/1800.pdf
+
+- Bank of England. (2019). Alan Turing to be the face of the new £50 note. https://www.bankofengland.co.uk/-/media/boe/files/news/2019/july/alan-turing-to-be-the-face-of-new-50-note.pdf
+
+- Computer History Museum. (n.d.). Pilot ACE. https://www.computerhistory.org/revolution/story/96
+
+
+
+Chronicle word count: 621

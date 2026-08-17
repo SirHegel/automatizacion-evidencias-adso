@@ -3,9 +3,12 @@
 ## Alcance verificado
 
 El instrumento local contiene cuatro indicadores binarios: una solución coherente en
-JavaScript para cada problema. La guía de aprendizaje precisa los enunciados. Para facilitar
-la revisión en la plataforma, las cuatro soluciones, su explicación y su trazabilidad se
-integran en un único documento PDF.
+JavaScript para cada problema. La guía de aprendizaje precisa los enunciados y exige un
+único archivo ZIP con todas las soluciones.
+
+La evidencia no exige construir un sistema integrado. Se desarrollan cuatro programas
+independientes y el cuarto constituye una miniaplicación de gestión: registra personas,
+consulta por posición, modifica, elimina, lista y conserva la información en JSON.
 
 - [Instrumento original](../01_enunciado/IE-GA3-220501093-AA3-EV02.pdf)
 - [Guía de aprendizaje SENA, páginas físicas 9–10](https://archivos.territorio.la/archivos/clases/Guianaprendizajen3___58631be32843215___.pdf)
@@ -27,11 +30,10 @@ integran en un único documento PDF.
   eliminación, listado y persistencia JSON para atender los criterios generales del
   instrumento sobre administración de información.
 - Los datos de prueba son sintéticos. El archivo JSON que se crea al ejecutar el menú no se
-  incorpora al PDF ni al repositorio.
+  incluye en los ZIP generados.
 
 ## Modelo de publicación
 
-`03_entrega` contiene exclusivamente el PDF público genérico que se publica en GitHub.
-`04_entrega_personalizada.local` contiene un único PDF personalizado, listo para seleccionar
-y cargar en la plataforma SENA. El DOCX se usa solo como formato temporal durante la
-exportación y nunca se conserva. La segunda carpeta está ignorada por Git.
+`03_entrega` contiene exclusivamente el ZIP público genérico que se publica en GitHub.
+`04_entrega_personalizada.local` contiene un único ZIP personalizado, listo para seleccionar
+y cargar en la plataforma SENA. La segunda carpeta está ignorada por Git.

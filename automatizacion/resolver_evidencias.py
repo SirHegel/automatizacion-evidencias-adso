@@ -290,7 +290,7 @@ WORKSHOPS = {
         outputs=(
             workshop_path(
                 SEVENTH_FOLDER,
-                "03_entrega/GA3-220501093-AA3-EV02_Resolucion_Estructuras_Almacenamiento.pdf",
+                "03_entrega/GA3-220501093-AA3-EV02_Soluciones_JavaScript_PUBLICO.zip",
             ),
         ),
         exports=(),
@@ -305,7 +305,6 @@ EXPECTED_PDF_PAGES = {
     WORKSHOPS[4].outputs[1]: 10,
     WORKSHOPS[5].outputs[1]: 33,
     WORKSHOPS[6].outputs[1]: 12,
-    WORKSHOPS[7].outputs[0]: 15,
 }
 EXPECTED_PPTX_SLIDES = {WORKSHOPS[2].outputs[0]: 8}
 EXPECTED_DOCX_IMAGES = {
@@ -318,7 +317,6 @@ EXPECTED_PUBLIC_AUTHORS = {
     WORKSHOPS[5].outputs[1]: "Entrega académica pública",
     WORKSHOPS[6].outputs[0]: "Entrega académica pública",
     WORKSHOPS[6].outputs[1]: "Entrega académica pública",
-    WORKSHOPS[7].outputs[0]: "Entrega académica pública",
 }
 EXPECTED_PDF_TEXT_TERMS = {
     WORKSHOPS[6].outputs[1]: (
@@ -326,16 +324,6 @@ EXPECTED_PDF_TEXT_TERMS = {
         "Características principales de JavaScript",
         "Tipos de datos primitivos",
         "Operadores en JavaScript",
-        "Referencias",
-    ),
-    WORKSHOPS[7].outputs[0]: (
-        "Resolución a problemas algorítmicos aplicando estructuras de almacenamiento",
-        "01_figuras_planas.js",
-        "02_analisis_edades.js",
-        "03_mezclar_vectores.js",
-        "04_encuesta_musical.js",
-        "13 de 13",
-        "Matriz final de cumplimiento",
         "Referencias",
     ),
 }
@@ -349,6 +337,7 @@ EXPECTED_DOCX_FORMATS = {
 }
 
 FIFTH_ARCHIVE_ROOT = WORKSHOPS[5].code
+SEVENTH_ARCHIVE_ROOT = WORKSHOPS[7].code
 SEVENTH_SOURCE_RELATIVES = (
     "codigo/01_figuras_planas.js",
     "codigo/02_analisis_edades.js",
@@ -393,6 +382,10 @@ EXPECTED_DELIVERY_ZIP_MEMBERS = {
                 (10, "tabla_multiplicar_decreciente"),
             )
         },
+    },
+    WORKSHOPS[7].outputs[0]: {
+        f"{SEVENTH_ARCHIVE_ROOT}/{relative}"
+        for relative in SEVENTH_SOURCE_RELATIVES
     },
 }
 
@@ -564,6 +557,26 @@ def validate_delivery_archive(path: Path) -> None:
             for name in names:
                 if name.endswith(".psc") and not archive.read(name).strip():
                     raise RuntimeError(f"Pseudocódigo vacío dentro del ZIP: {name}")
+        if path == WORKSHOPS[7].outputs[0]:
+            for relative in SEVENTH_SOURCE_RELATIVES:
+                archived_name = f"{SEVENTH_ARCHIVE_ROOT}/{relative}"
+                source = workshop_path(SEVENTH_FOLDER, f"02_solucion/{relative}")
+                if archive.read(archived_name) != source.read_bytes():
+                    raise RuntimeError(
+                        f"El componente {relative} del ZIP no coincide con su fuente."
+                    )
+            javascript_files = [
+                name
+                for name in names
+                if name.startswith(f"{SEVENTH_ARCHIVE_ROOT}/codigo/")
+                and name.endswith(".js")
+            ]
+            if len(javascript_files) != 4:
+                raise RuntimeError(
+                    "El ZIP público no contiene exactamente las cuatro soluciones JavaScript."
+                )
+            if any(not archive.read(name).strip() for name in javascript_files):
+                raise RuntimeError("El ZIP público contiene una solución JavaScript vacía.")
 
 
 def validate_javascript_workshop(workshop: Workshop) -> None:

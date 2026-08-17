@@ -1,1 +1,1 @@
-python-docx==1.2.0
+# Este taller usa exclusivamente la biblioteca estándar de Python para empaquetar.

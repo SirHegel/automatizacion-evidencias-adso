@@ -17,8 +17,8 @@ sus generadores, crea los PDF, verifica los entregables y aplica una barrera de 
   quinto taller.
 - Comprobación de doce páginas, cuatro figuras, autor genérico y secciones obligatorias en
   el sexto taller.
-- Comprobación del PDF, las cuatro fuentes JavaScript y la suite de pruebas del séptimo
-  taller.
+- Comprobación del manifiesto ZIP, las cuatro fuentes JavaScript y la suite de pruebas del
+  séptimo taller.
 - Auditoría de texto, rutas, XML interno, archivos ZIP y metadatos de PDF, DOCX y PPTX.
 - Detección de secuencias numéricas de alto riesgo, correos, claves privadas, tokens y
   valores confidenciales suministrados localmente.

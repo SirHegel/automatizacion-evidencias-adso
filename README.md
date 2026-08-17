@@ -39,7 +39,12 @@ Cada evidencia es autocontenida: el instrumento original, la explicación de có
 │   │   ├── 02_solucion/
 │   │   ├── 03_entrega/
 │   │   └── INFORME_RESOLUCION.md
-│   └── 07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/
+│   ├── 07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/
+│   │   ├── 01_enunciado/
+│   │   ├── 02_solucion/
+│   │   ├── 03_entrega/
+│   │   └── INFORME_RESOLUCION.md
+│   └── 08-GA3-240202501-AA1-EV02-audio-obligaciones-laborales-ingles/
 │       ├── 01_enunciado/
 │       ├── 02_solucion/
 │       ├── 03_entrega/
@@ -54,12 +59,17 @@ Las carpetas siguen siempre el mismo orden:
 1. `01_enunciado`: documento original que define la evidencia.
 2. `02_solucion`: guiones, fuentes, recursos y código utilizado para resolverla.
 3. `03_entrega`: productos públicos sin datos personales, destinados a GitHub.
-4. `04_entrega_personalizada.local`: un único archivo final para entregar al SENA; solo
-   existe localmente cuando la evidencia necesita identificación.
+4. `04_entrega_personalizada.local`: únicamente los documentos identificados que se usan
+   para entregar o grabar la evidencia; Git los ignora por contener datos sensibles.
 5. `INFORME_RESOLUCION.md`: relación entre la rúbrica y la solución realizada.
 
 La carpeta `automatizacion` contiene el resolutor que regenera las entregas existentes,
 comprueba su integridad y detiene el proceso si detecta datos personales no autorizados.
+
+El formato sigue la naturaleza de cada evidencia: un documento se publica y entrega como
+PDF; un ZIP se usa únicamente cuando la guía exige un paquete o cuando deben conservarse
+varios archivos funcionales, como código o una aplicación. Los PDF sencillos no se
+empaquetan en ZIP.
 
 ## Talleres
 
@@ -72,6 +82,7 @@ comprueba su integridad y detiene el proceso si detecta datos personales no auto
 | 5 | GA3-220501093-AA2-EV03 | Funciones y procedimientos en algoritmos | Completo; versión pública anonimizada | [Ver informe](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/INFORME_RESOLUCION.md) | [ZIP](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.zip) · [PDF](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.pdf) · [DOCX](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.docx) |
 | 6 | GA3-220501093-AA3-EV01 | Bases teóricas de estructuras de almacenamiento en memoria | Completo; publicación saneada y un único PDF local para SENA | [Ver informe](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/INFORME_RESOLUCION.md) | [PDF](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.pdf) · [DOCX](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.docx) |
 | 7 | GA3-220501093-AA3-EV02 | Problemas algorítmicos con estructuras de almacenamiento | Completo; cuatro programas probados y un único ZIP local para SENA | [Ver informe](talleres/07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/INFORME_RESOLUCION.md) | [ZIP público](talleres/07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/03_entrega/GA3-220501093-AA3-EV02_Soluciones_JavaScript_PUBLICO.zip) |
+| 8 | GA3-240202501-AA1-EV02 | Audio en inglés sobre obligaciones laborales y académicas | Guion y pronunciación listos; grabación, enlace y dos datos por completar | [Ver informe](talleres/08-GA3-240202501-AA1-EV02-audio-obligaciones-laborales-ingles/INFORME_RESOLUCION.md) | [Guion público](talleres/08-GA3-240202501-AA1-EV02-audio-obligaciones-laborales-ingles/03_entrega/GA3-240202501-AA1-EV02_Guion_Audio_PUBLICO.pdf) · [Pronunciación pública](talleres/08-GA3-240202501-AA1-EV02-audio-obligaciones-laborales-ingles/03_entrega/GA3-240202501-AA1-EV02_Guia_Pronunciacion_PUBLICO.pdf) |
 
 ## Estado del segundo taller
 
@@ -113,6 +124,20 @@ No es un sistema integrado: son cuatro programas y el cuarto funciona como minia
 con menú, operaciones de gestión y almacenamiento en archivo.
 GitHub recibe únicamente el ZIP público; `04_entrega_personalizada.local` contiene un solo
 ZIP con el nombre y los datos del aprendiz, listo para cargar en la plataforma.
+
+## Estado del octavo taller
+
+El guion en inglés cubre una presentación breve y una opinión sobre actitudes, creencias y
+obligaciones en contextos académico y laboral. Emplea de forma explícita `have to`, `must`
+y `should` con verbo base. También existe una guía paralela de pronunciación, pausas,
+acentos, ritmo y entonación para apoyar una grabación de dos a cinco minutos.
+
+GitHub conserva dos PDF públicos saneados y separados por nombre: el guion y la guía de
+pronunciación. Localmente,
+`04_entrega_personalizada.local` contiene solo dos documentos identificados: el archivo
+`ENTREGAR_...` que recibirá el enlace reproducible del audio y el archivo
+`APOYO_GRABACION_...`, marcado de manera visible como apoyo que no se debe subir. La
+grabación debe hacerse con la voz real del aprendiz; no se genera una voz artificial.
 
 ## Resolución y auditoría automáticas
 

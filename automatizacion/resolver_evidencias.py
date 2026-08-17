@@ -77,6 +77,7 @@ FOURTH_FOLDER = "04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto"
 FIFTH_FOLDER = "05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos"
 SIXTH_FOLDER = "06-GA3-220501093-AA3-EV01-bases-teoricas-javascript"
 SEVENTH_FOLDER = "07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript"
+EIGHTH_FOLDER = "08-GA3-240202501-AA1-EV02-audio-obligaciones-laborales-ingles"
 
 WORKSHOPS = {
     1: Workshop(
@@ -295,6 +296,25 @@ WORKSHOPS = {
         ),
         exports=(),
     ),
+    8: Workshop(
+        number=8,
+        code="GA3-240202501-AA1-EV02",
+        title="Audio en inglés sobre obligaciones laborales y académicas",
+        directory=REPO_ROOT / "talleres" / EIGHTH_FOLDER,
+        generator=workshop_path(EIGHTH_FOLDER, "02_solucion/generar_entrega.py"),
+        requirements=workshop_path(EIGHTH_FOLDER, "02_solucion/requirements.txt"),
+        outputs=(
+            workshop_path(
+                EIGHTH_FOLDER,
+                "03_entrega/GA3-240202501-AA1-EV02_Guion_Audio_PUBLICO.pdf",
+            ),
+            workshop_path(
+                EIGHTH_FOLDER,
+                "03_entrega/GA3-240202501-AA1-EV02_Guia_Pronunciacion_PUBLICO.pdf",
+            ),
+        ),
+        exports=(),
+    ),
 }
 
 EXPECTED_PDF_PAGES = {
@@ -305,6 +325,8 @@ EXPECTED_PDF_PAGES = {
     WORKSHOPS[4].outputs[1]: 10,
     WORKSHOPS[5].outputs[1]: 33,
     WORKSHOPS[6].outputs[1]: 12,
+    WORKSHOPS[8].outputs[0]: 2,
+    WORKSHOPS[8].outputs[1]: 3,
 }
 EXPECTED_PPTX_SLIDES = {WORKSHOPS[2].outputs[0]: 8}
 EXPECTED_DOCX_IMAGES = {
@@ -317,6 +339,8 @@ EXPECTED_PUBLIC_AUTHORS = {
     WORKSHOPS[5].outputs[1]: "Entrega académica pública",
     WORKSHOPS[6].outputs[0]: "Entrega académica pública",
     WORKSHOPS[6].outputs[1]: "Entrega académica pública",
+    WORKSHOPS[8].outputs[0]: "Entrega académica pública",
+    WORKSHOPS[8].outputs[1]: "Entrega académica pública",
 }
 EXPECTED_PDF_TEXT_TERMS = {
     WORKSHOPS[6].outputs[1]: (
@@ -325,6 +349,19 @@ EXPECTED_PDF_TEXT_TERMS = {
         "Tipos de datos primitivos",
         "Operadores en JavaScript",
         "Referencias",
+    ),
+    WORKSHOPS[8].outputs[0]: (
+        "Audio GA3-240202501-AA1-EV02",
+        "have to",
+        "must",
+        "should",
+    ),
+    WORKSHOPS[8].outputs[1]: (
+        "Audio GA3-240202501-AA1-EV02",
+        "Pronunciation",
+        "have to",
+        "must",
+        "should",
     ),
 }
 EXPECTED_TEXT_WORD_RANGES = {WORKSHOPS[3].outputs[2]: (200, 400)}
@@ -675,6 +712,35 @@ def validate_text_word_count(path: Path) -> None:
         )
 
 
+def validate_document_only_workshop(workshop: Workshop) -> None:
+    """Keep the audio preparation as named PDFs, never as an unnecessary bundle."""
+    if workshop.number != 8:
+        return
+    public_directory = workshop.directory / "03_entrega"
+    actual = {path for path in public_directory.iterdir() if path.is_file()}
+    expected = set(workshop.outputs)
+    if actual != expected:
+        missing = sorted(path.name for path in expected - actual)
+        unexpected = sorted(path.name for path in actual - expected)
+        raise RuntimeError(
+            "Contenido público inesperado en el taller 8: "
+            f"faltan {missing}; sobran {unexpected}."
+        )
+    forbidden_suffixes = {".docx", ".pptx", ".zip"}
+    forbidden = [
+        path.relative_to(workshop.directory)
+        for path in workshop.directory.rglob("*")
+        if path.is_file()
+        and "04_entrega_personalizada.local" not in path.parts
+        and path.suffix.casefold() in forbidden_suffixes
+    ]
+    if forbidden:
+        raise RuntimeError(
+            "El taller 8 es documental y no debe empaquetarse ni conservar Office: "
+            f"{forbidden}."
+        )
+
+
 def validate_pdf(path: Path) -> None:
     pdfinfo = shutil.which("pdfinfo")
     if not pdfinfo:
@@ -730,6 +796,7 @@ def validate_workshop(workshop: Workshop) -> None:
             validate_text_word_count(output)
         elif output.suffix.lower() in ARCHIVE_SUFFIXES:
             validate_delivery_archive(output)
+    validate_document_only_workshop(workshop)
     validate_javascript_workshop(workshop)
     print(f"✓ Taller {workshop.number}: {len(workshop.outputs)} entregables válidos.")
 
@@ -936,6 +1003,7 @@ def privacy_findings(
     private_terms: list[str],
     *,
     check_long_numbers: bool = True,
+    check_profile_labels: bool = True,
 ) -> list[str]:
     findings: list[str] = []
     if check_long_numbers:
@@ -960,9 +1028,10 @@ def privacy_findings(
     if any(re.search(pattern, text, flags=re.IGNORECASE) for pattern in local_path_patterns):
         findings.append("ruta local de usuario")
     folded_text = text.casefold()
-    for term in built_in_private_terms():
-        if re.search(rf"(?<!\w){re.escape(term.casefold())}(?!\w)", folded_text):
-            findings.append("campo de perfil no autorizado")
+    if check_profile_labels:
+        for term in built_in_private_terms():
+            if re.search(rf"(?<!\w){re.escape(term.casefold())}(?!\w)", folded_text):
+                findings.append("campo de perfil no autorizado")
     for term in private_terms:
         if term.casefold() in folded_text:
             findings.append("valor incluido en la lista privada local")
@@ -975,14 +1044,21 @@ def audit_privacy(extra_path: Path | None = None) -> None:
     findings: list[str] = []
     checked = 0
     for path in repository_files():
+        relative = path.relative_to(REPO_ROOT)
+        # Los instrumentos oficiales pueden nombrar etiquetas genéricas de
+        # identificación sin contener el valor personal del aprendiz. En
+        # 01_enunciado se conservan los controles sobre números, correos, rutas,
+        # secretos y la lista privada; solo se tolera la etiqueta vacía.
+        is_official_instrument = "01_enunciado" in relative.parts
         for component, text in extracted_parts(path):
             checked += 1
             for finding in privacy_findings(
                 text,
                 private_terms,
                 check_long_numbers="relaciones externas" not in component,
+                check_profile_labels=not is_official_instrument,
             ):
-                findings.append(f"{path.relative_to(REPO_ROOT)} [{component}]: {finding}")
+                findings.append(f"{relative} [{component}]: {finding}")
     if findings:
         print("\n✗ La auditoría de privacidad encontró riesgos:", file=sys.stderr)
         for finding in findings:

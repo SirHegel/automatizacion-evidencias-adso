@@ -6,14 +6,16 @@ sus generadores, crea los PDF, verifica los entregables y aplica una barrera de 
 
 ## Qué contiene
 
-- Un catálogo de los cuatro talleres y sus productos esperados.
+- Un catálogo de los cinco talleres y sus productos esperados.
 - Preparación opcional del entorno Python.
 - Ejecución de los generadores incluidos en cada carpeta `02_solucion`.
 - Exportación atómica de DOCX y PPTX a PDF mediante LibreOffice.
 - Comprobación de integridad de archivos Office y cantidad de páginas de cada PDF.
 - Control de las 200–400 palabras, Arial 12 e interlineado 1,5 exigidos en el tercer taller.
 - Comprobación de las diez páginas y los dos diagramas incrustados del cuarto taller.
-- Auditoría de texto, rutas, XML interno y metadatos de PDF, DOCX y PPTX.
+- Comprobación de 33 páginas, diez diagramas, autor genérico y manifiesto ZIP exacto en el
+  quinto taller.
+- Auditoría de texto, rutas, XML interno, archivos ZIP y metadatos de PDF, DOCX y PPTX.
 - Detección de secuencias numéricas de alto riesgo, correos, claves privadas, tokens y
   valores confidenciales suministrados localmente.
 
@@ -25,7 +27,7 @@ Ejecute los comandos desde la raíz del repositorio:
 python3 automatizacion/resolver_evidencias.py listar
 python3 automatizacion/resolver_evidencias.py preparar
 python3 automatizacion/resolver_evidencias.py resolver --todos
-python3 automatizacion/resolver_evidencias.py validar --taller 4
+python3 automatizacion/resolver_evidencias.py validar --taller 5
 python3 automatizacion/resolver_evidencias.py auditar
 ```
 
@@ -48,6 +50,13 @@ python3 automatizacion/resolver_evidencias.py auditar
 
 Ese archivo está excluido mediante `.gitignore`. También se puede indicar otra ruta con
 `--lista-privada`. Nunca se deben guardar identificadores ni credenciales dentro del código.
+
+## Entregas personalizadas locales
+
+El quinto taller admite una variante personalizada, pero exige que tanto el perfil como el
+destino estén fuera del repositorio. El generador rechaza rutas privadas internas. Esta
+variante no se ejecuta en CI y no forma parte de `WORKSHOPS`; GitHub solo recibe la edición
+pública con autor genérico.
 
 ## Cómo agregar otro taller
 

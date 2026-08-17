@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import io
 import os
 import re
 import shutil
@@ -13,7 +14,7 @@ import tempfile
 import zipfile
 import xml.etree.ElementTree as ElementTree
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Iterable
 
 
@@ -39,6 +40,7 @@ TEXT_SUFFIXES = {
     ".yml",
 }
 OFFICE_SUFFIXES = {".docx", ".pptx", ".xlsx"}
+ARCHIVE_SUFFIXES = {".zip"}
 ALLOWED_LONG_NUMBERS = {
     "220501093",
     "240202501",
@@ -71,6 +73,7 @@ FIRST_FOLDER = "01-GA2-240202501-AA1-EV03-cronica-alan-turing"
 SECOND_FOLDER = "02-GA2-240202501-AA2-EV02-presentacion-monserrate"
 THIRD_FOLDER = "03-GA2-240202501-AA2-EV03-correo-solicitud-empleo"
 FOURTH_FOLDER = "04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto"
+FIFTH_FOLDER = "05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos"
 
 WORKSHOPS = {
     1: Workshop(
@@ -210,6 +213,40 @@ WORKSHOPS = {
             ),
         ),
     ),
+    5: Workshop(
+        number=5,
+        code="GA3-220501093-AA2-EV03",
+        title="Funciones y procedimientos en la solución de algoritmos",
+        directory=REPO_ROOT / "talleres" / FIFTH_FOLDER,
+        generator=workshop_path(FIFTH_FOLDER, "02_solucion/generar_entrega.py"),
+        requirements=workshop_path(FIFTH_FOLDER, "02_solucion/requirements.txt"),
+        outputs=(
+            workshop_path(
+                FIFTH_FOLDER,
+                "03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.docx",
+            ),
+            workshop_path(
+                FIFTH_FOLDER,
+                "03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.pdf",
+            ),
+            workshop_path(
+                FIFTH_FOLDER,
+                "03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.zip",
+            ),
+        ),
+        exports=(
+            PdfExport(
+                source=workshop_path(
+                    FIFTH_FOLDER,
+                    "03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.docx",
+                ),
+                destination=workshop_path(
+                    FIFTH_FOLDER,
+                    "03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.pdf",
+                ),
+            ),
+        ),
+    ),
 }
 
 EXPECTED_PDF_PAGES = {
@@ -218,15 +255,61 @@ EXPECTED_PDF_PAGES = {
     WORKSHOPS[2].outputs[3]: 8,
     WORKSHOPS[3].outputs[1]: 1,
     WORKSHOPS[4].outputs[1]: 10,
+    WORKSHOPS[5].outputs[1]: 33,
 }
 EXPECTED_PPTX_SLIDES = {WORKSHOPS[2].outputs[0]: 8}
-EXPECTED_DOCX_IMAGES = {WORKSHOPS[4].outputs[0]: 2}
+EXPECTED_DOCX_IMAGES = {
+    WORKSHOPS[4].outputs[0]: 2,
+    WORKSHOPS[5].outputs[0]: 10,
+}
+EXPECTED_PUBLIC_AUTHORS = {
+    WORKSHOPS[5].outputs[0]: "Entrega académica pública",
+    WORKSHOPS[5].outputs[1]: "Entrega académica pública",
+}
 EXPECTED_TEXT_WORD_RANGES = {WORKSHOPS[3].outputs[2]: (200, 400)}
 EXPECTED_DOCX_FORMATS = {
     WORKSHOPS[3].outputs[0]: {
         "font": "Arial",
         "size_half_points": "24",
         "line_twips": "360",
+    }
+}
+
+FIFTH_ARCHIVE_ROOT = WORKSHOPS[5].code
+EXPECTED_DELIVERY_ZIP_MEMBERS = {
+    WORKSHOPS[5].outputs[2]: {
+        f"{FIFTH_ARCHIVE_ROOT}/LEAME.txt",
+        f"{FIFTH_ARCHIVE_ROOT}/{WORKSHOPS[5].outputs[0].name}",
+        *{
+            f"{FIFTH_ARCHIVE_ROOT}/pseudocodigo/{number:02d}_{slug}.psc"
+            for number, slug in (
+                (1, "ritmo_maraton"),
+                (2, "celsius_fahrenheit"),
+                (3, "nota_primer_parcial"),
+                (4, "duplicar_capital"),
+                (5, "numeros_menores_igual_25"),
+                (6, "camisas_dolares_pesos"),
+                (7, "consumos_restaurante"),
+                (8, "siguiente_segundo"),
+                (9, "producto_1_hasta_n"),
+                (10, "tabla_multiplicar_decreciente"),
+            )
+        },
+        *{
+            f"{FIFTH_ARCHIVE_ROOT}/diagramas/{number:02d}_{slug}.png"
+            for number, slug in (
+                (1, "ritmo_maraton"),
+                (2, "celsius_fahrenheit"),
+                (3, "nota_primer_parcial"),
+                (4, "duplicar_capital"),
+                (5, "numeros_menores_igual_25"),
+                (6, "camisas_dolares_pesos"),
+                (7, "consumos_restaurante"),
+                (8, "siguiente_segundo"),
+                (9, "producto_1_hasta_n"),
+                (10, "tabla_multiplicar_decreciente"),
+            )
+        },
     }
 }
 
@@ -334,6 +417,70 @@ def validate_zip(path: Path) -> None:
                     f"Cantidad de imágenes inesperada en {path}: "
                     f"{images}, se esperaban {expected_images}."
                 )
+        expected_author = EXPECTED_PUBLIC_AUTHORS.get(path)
+        if expected_author is not None:
+            core_path = "docProps/core.xml"
+            if core_path not in members:
+                raise RuntimeError(f"El DOCX no contiene metadatos verificables: {path}")
+            core = ElementTree.fromstring(archive.read(core_path))
+            creator_tag = "{http://purl.org/dc/elements/1.1/}creator"
+            modifier_tag = (
+                "{http://schemas.openxmlformats.org/package/2006/metadata/core-properties}"
+                "lastModifiedBy"
+            )
+            creators = [
+                element.text or ""
+                for element in core.iter()
+                if element.tag in {creator_tag, modifier_tag}
+            ]
+            if not creators or any(value != expected_author for value in creators):
+                raise RuntimeError(
+                    f"Autor público inesperado en {path}: {creators!r}."
+                )
+
+
+def validate_delivery_archive(path: Path) -> None:
+    if not zipfile.is_zipfile(path):
+        raise RuntimeError(f"El entregable ZIP no es válido: {path}")
+    with zipfile.ZipFile(path) as archive:
+        damaged_member = archive.testzip()
+        if damaged_member:
+            raise RuntimeError(f"Componente dañado en {path}: {damaged_member}")
+        entries = [member for member in archive.infolist() if not member.is_dir()]
+        names = {member.filename for member in entries}
+        expected = EXPECTED_DELIVERY_ZIP_MEMBERS.get(path)
+        if expected is not None and names != expected:
+            missing = sorted(expected - names)
+            unexpected = sorted(names - expected)
+            raise RuntimeError(
+                f"Contenido inesperado en {path}: faltan {missing}; sobran {unexpected}."
+            )
+        unsafe: list[str] = []
+        for member in entries:
+            relative = PurePosixPath(member.filename)
+            unix_mode = member.external_attr >> 16
+            is_symlink = unix_mode & 0o170000 == 0o120000
+            if (
+                relative.is_absolute()
+                or ".." in relative.parts
+                or member.flag_bits & 0x1
+                or is_symlink
+            ):
+                unsafe.append(member.filename)
+        if unsafe:
+            raise RuntimeError(f"El ZIP contiene rutas o entradas inseguras: {unsafe}")
+
+        if path == WORKSHOPS[5].outputs[2]:
+            archived_docx = (
+                f"{FIFTH_ARCHIVE_ROOT}/{WORKSHOPS[5].outputs[0].name}"
+            )
+            if archive.read(archived_docx) != WORKSHOPS[5].outputs[0].read_bytes():
+                raise RuntimeError(
+                    "El DOCX incluido en el ZIP no coincide con la entrega pública."
+                )
+            for name in names:
+                if name.endswith(".psc") and not archive.read(name).strip():
+                    raise RuntimeError(f"Pseudocódigo vacío dentro del ZIP: {name}")
 
 
 def validate_docx_format(path: Path) -> None:
@@ -437,6 +584,14 @@ def validate_pdf(path: Path) -> None:
     encrypted = re.search(r"^Encrypted:\s+(\S+)", result.stdout, flags=re.MULTILINE)
     if encrypted and encrypted.group(1).lower() != "no":
         raise RuntimeError(f"El PDF está cifrado y no puede auditarse completamente: {path}")
+    expected_author = EXPECTED_PUBLIC_AUTHORS.get(path)
+    if expected_author is not None:
+        author = re.search(r"^Author:\s*(.*)$", result.stdout, flags=re.MULTILINE)
+        if not author or author.group(1).strip() != expected_author:
+            actual = author.group(1).strip() if author else "ausente"
+            raise RuntimeError(
+                f"Autor público inesperado en {path}: {actual!r}."
+            )
 
 
 def validate_workshop(workshop: Workshop) -> None:
@@ -451,6 +606,8 @@ def validate_workshop(workshop: Workshop) -> None:
             validate_pdf(output)
         elif output.suffix.lower() == ".txt":
             validate_text_word_count(output)
+        elif output.suffix.lower() in ARCHIVE_SUFFIXES:
+            validate_delivery_archive(output)
     print(f"✓ Taller {workshop.number}: {len(workshop.outputs)} entregables válidos.")
 
 
@@ -546,6 +703,40 @@ def extracted_parts(path: Path) -> Iterable[tuple[str, str]]:
                     yield member.filename, visible_text
                 if external_targets:
                     yield f"{member.filename} — relaciones externas", external_targets
+        return
+    if suffix in ARCHIVE_SUFFIXES:
+        if not zipfile.is_zipfile(path):
+            yield "archivo", "FORMATO ZIP DAÑADO"
+            return
+        with zipfile.ZipFile(path) as archive:
+            for member in archive.infolist():
+                if member.is_dir():
+                    continue
+                yield "ruta interna ZIP", member.filename
+                data = archive.read(member)
+                inner_suffix = PurePosixPath(member.filename).suffix.lower()
+                if inner_suffix in TEXT_SUFFIXES:
+                    yield member.filename, decode_text(data)
+                elif inner_suffix in OFFICE_SUFFIXES:
+                    nested_stream = io.BytesIO(data)
+                    if not zipfile.is_zipfile(nested_stream):
+                        yield member.filename, "FORMATO OFFICE DAÑADO"
+                        continue
+                    nested_stream.seek(0)
+                    with zipfile.ZipFile(nested_stream) as nested:
+                        for inner_member in nested.infolist():
+                            if inner_member.is_dir() or not inner_member.filename.lower().endswith(
+                                (".xml", ".rels", ".txt")
+                            ):
+                                continue
+                            visible_text, external_targets = xml_human_text(
+                                nested.read(inner_member)
+                            )
+                            component = f"{member.filename}::{inner_member.filename}"
+                            if visible_text:
+                                yield component, visible_text
+                            if external_targets:
+                                yield f"{component} — relaciones externas", external_targets
         return
     if suffix == ".pdf":
         pdftotext = shutil.which("pdftotext")

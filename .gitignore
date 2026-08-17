@@ -5,3 +5,6 @@ __pycache__/
 .DS_Store
 .~lock.*#
 .privacidad.local
+/perfil-aprendiz.local.json
+/talleres/*/03_entrega/*_COMPLETO.local.*
+/talleres/*/03_entrega/INFORME_COMPLETO.local.md

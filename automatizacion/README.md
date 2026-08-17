@@ -6,7 +6,7 @@ sus generadores, crea los PDF, verifica los entregables y aplica una barrera de 
 
 ## Qué contiene
 
-- Un catálogo de los cinco talleres y sus productos esperados.
+- Un catálogo de los seis talleres y sus productos esperados.
 - Preparación opcional del entorno Python.
 - Ejecución de los generadores incluidos en cada carpeta `02_solucion`.
 - Exportación atómica de DOCX y PPTX a PDF mediante LibreOffice.
@@ -15,6 +15,8 @@ sus generadores, crea los PDF, verifica los entregables y aplica una barrera de 
 - Comprobación de las diez páginas y los dos diagramas incrustados del cuarto taller.
 - Comprobación de 33 páginas, diez diagramas, autor genérico y manifiesto ZIP exacto en el
   quinto taller.
+- Comprobación de doce páginas, cuatro figuras, autor genérico y secciones obligatorias en
+  el sexto taller.
 - Auditoría de texto, rutas, XML interno, archivos ZIP y metadatos de PDF, DOCX y PPTX.
 - Detección de secuencias numéricas de alto riesgo, correos, claves privadas, tokens y
   valores confidenciales suministrados localmente.
@@ -27,7 +29,7 @@ Ejecute los comandos desde la raíz del repositorio:
 python3 automatizacion/resolver_evidencias.py listar
 python3 automatizacion/resolver_evidencias.py preparar
 python3 automatizacion/resolver_evidencias.py resolver --todos
-python3 automatizacion/resolver_evidencias.py validar --taller 5
+python3 automatizacion/resolver_evidencias.py validar --taller 6
 python3 automatizacion/resolver_evidencias.py auditar
 ```
 
@@ -53,10 +55,16 @@ Ese archivo está excluido mediante `.gitignore`. También se puede indicar otra
 
 ## Entregas personalizadas locales
 
-El quinto taller admite una variante personalizada, pero exige que tanto el perfil como el
-destino estén fuera del repositorio. El generador rechaza rutas privadas internas. Esta
-variante no se ejecuta en CI y no forma parte de `WORKSHOPS`; GitHub solo recibe la edición
-pública con autor genérico.
+El modelo vigente conserva las dos ediciones del sexto taller dentro del mismo
+`03_entrega`. La edición pública tiene autor genérico y es la única que Git puede rastrear.
+La edición completa usa el sufijo `.local`, toma los datos de
+`perfil-aprendiz.local.json` y queda ignorada. La auditoría falla si el perfil o cualquier
+archivo `.local` entra al índice, incluso si se intentó agregarlo de manera forzada.
+
+El quinto taller mantiene por compatibilidad su entrega personalizada anterior fuera del
+repositorio. Los talleres nuevos deben usar el modelo contiguo del sexto: dos archivos en
+la misma carpeta de entrega, una frontera explícita de publicación y ningún dato personal
+codificado en el generador.
 
 ## Cómo agregar otro taller
 

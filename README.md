@@ -29,7 +29,12 @@ Cada evidencia es autocontenida: el instrumento original, la explicación de có
 │   │   ├── 02_solucion/
 │   │   ├── 03_entrega/
 │   │   └── INFORME_RESOLUCION.md
-│   └── 05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/
+│   ├── 05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/
+│   │   ├── 01_enunciado/
+│   │   ├── 02_solucion/
+│   │   ├── 03_entrega/
+│   │   └── INFORME_RESOLUCION.md
+│   └── 06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/
 │       ├── 01_enunciado/
 │       ├── 02_solucion/
 │       ├── 03_entrega/
@@ -58,6 +63,7 @@ comprueba su integridad y detiene el proceso si detecta datos personales no auto
 | 3 | GA2-240202501-AA2-EV03 | Correo en inglés de solicitud de empleo | Completo | [Ver informe](talleres/03-GA2-240202501-AA2-EV03-correo-solicitud-empleo/INFORME_RESOLUCION.md) | [PDF](talleres/03-GA2-240202501-AA2-EV03-correo-solicitud-empleo/03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.pdf) · [DOCX](talleres/03-GA2-240202501-AA2-EV03-correo-solicitud-empleo/03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.docx) · [TXT](talleres/03-GA2-240202501-AA2-EV03-correo-solicitud-empleo/03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.txt) |
 | 4 | GA3-220501093-AA2-EV01 | Algoritmos de edad y año bisiesto | Completo | [Ver informe](talleres/04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto/INFORME_RESOLUCION.md) | [PDF](talleres/04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto/03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.pdf) · [DOCX](talleres/04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto/03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.docx) |
 | 5 | GA3-220501093-AA2-EV03 | Funciones y procedimientos en algoritmos | Completo; versión pública anonimizada | [Ver informe](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/INFORME_RESOLUCION.md) | [ZIP](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.zip) · [PDF](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.pdf) · [DOCX](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.docx) |
+| 6 | GA3-220501093-AA3-EV01 | Bases teóricas de estructuras de almacenamiento en memoria | Completo; edición pública y completa local | [Ver informe](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/INFORME_RESOLUCION.md) | [PDF](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.pdf) · [DOCX](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.docx) |
 
 ## Estado del segundo taller
 
@@ -81,6 +87,15 @@ dos diagramas de flujo y 12 pruebas automatizadas con casos válidos y erróneos
 El taller está completo en ZIP, DOCX y PDF. Resuelve diez problemas mediante funciones o
 procedimientos, con diez pseudocódigos, diez diagramas y 34 comprobaciones automáticas. La
 publicación está anonimizada; la entrega personalizada se conserva fuera del repositorio.
+
+## Estado del sexto taller
+
+El documento está completo en DOCX y PDF. En doce páginas desarrolla los cuatro temas de
+la lista de chequeo, incluye ejemplos de JavaScript, cuatro figuras originales, conclusiones,
+matriz de cumplimiento y referencias. Dentro de `03_entrega` se generan dos ediciones con
+el mismo contenido académico: la pública sin datos sensibles y la completa local con los
+datos del aprendiz. Los archivos completos usan el sufijo `.local` y Git los excluye y
+protege de una publicación accidental.
 
 ## Resolución y auditoría automáticas
 

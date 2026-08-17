@@ -20,7 +20,7 @@ from typing import Iterable
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PRIVATE_BLOCKLIST = REPO_ROOT / ".privacidad.local"
-SKIPPED_DIRS = {".git", ".venv", "__pycache__"}
+LOCAL_PROFILE_NAME = "perfil-aprendiz.local.json"
 TEXT_SUFFIXES = {
     ".cfg",
     ".csv",
@@ -74,6 +74,7 @@ SECOND_FOLDER = "02-GA2-240202501-AA2-EV02-presentacion-monserrate"
 THIRD_FOLDER = "03-GA2-240202501-AA2-EV03-correo-solicitud-empleo"
 FOURTH_FOLDER = "04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto"
 FIFTH_FOLDER = "05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos"
+SIXTH_FOLDER = "06-GA3-220501093-AA3-EV01-bases-teoricas-javascript"
 
 WORKSHOPS = {
     1: Workshop(
@@ -247,6 +248,36 @@ WORKSHOPS = {
             ),
         ),
     ),
+    6: Workshop(
+        number=6,
+        code="GA3-220501093-AA3-EV01",
+        title="Bases teóricas de estructuras de almacenamiento en memoria",
+        directory=REPO_ROOT / "talleres" / SIXTH_FOLDER,
+        generator=workshop_path(SIXTH_FOLDER, "02_solucion/generar_entrega.py"),
+        requirements=workshop_path(SIXTH_FOLDER, "02_solucion/requirements.txt"),
+        outputs=(
+            workshop_path(
+                SIXTH_FOLDER,
+                "03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.docx",
+            ),
+            workshop_path(
+                SIXTH_FOLDER,
+                "03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.pdf",
+            ),
+        ),
+        exports=(
+            PdfExport(
+                source=workshop_path(
+                    SIXTH_FOLDER,
+                    "03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.docx",
+                ),
+                destination=workshop_path(
+                    SIXTH_FOLDER,
+                    "03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.pdf",
+                ),
+            ),
+        ),
+    ),
 }
 
 EXPECTED_PDF_PAGES = {
@@ -256,15 +287,28 @@ EXPECTED_PDF_PAGES = {
     WORKSHOPS[3].outputs[1]: 1,
     WORKSHOPS[4].outputs[1]: 10,
     WORKSHOPS[5].outputs[1]: 33,
+    WORKSHOPS[6].outputs[1]: 12,
 }
 EXPECTED_PPTX_SLIDES = {WORKSHOPS[2].outputs[0]: 8}
 EXPECTED_DOCX_IMAGES = {
     WORKSHOPS[4].outputs[0]: 2,
     WORKSHOPS[5].outputs[0]: 10,
+    WORKSHOPS[6].outputs[0]: 4,
 }
 EXPECTED_PUBLIC_AUTHORS = {
     WORKSHOPS[5].outputs[0]: "Entrega académica pública",
     WORKSHOPS[5].outputs[1]: "Entrega académica pública",
+    WORKSHOPS[6].outputs[0]: "Entrega académica pública",
+    WORKSHOPS[6].outputs[1]: "Entrega académica pública",
+}
+EXPECTED_PDF_TEXT_TERMS = {
+    WORKSHOPS[6].outputs[1]: (
+        "Lenguajes compilados e interpretados",
+        "Características principales de JavaScript",
+        "Tipos de datos primitivos",
+        "Operadores en JavaScript",
+        "Referencias",
+    ),
 }
 EXPECTED_TEXT_WORD_RANGES = {WORKSHOPS[3].outputs[2]: (200, 400)}
 EXPECTED_DOCX_FORMATS = {
@@ -592,6 +636,19 @@ def validate_pdf(path: Path) -> None:
             raise RuntimeError(
                 f"Autor público inesperado en {path}: {actual!r}."
             )
+    expected_terms = EXPECTED_PDF_TEXT_TERMS.get(path)
+    if expected_terms:
+        pdftotext = shutil.which("pdftotext")
+        if not pdftotext:
+            raise RuntimeError(
+                "pdftotext no está disponible; no se puede verificar la cobertura del PDF."
+            )
+        extracted = run([pdftotext, str(path), "-"], capture=True).stdout.casefold()
+        missing_terms = [term for term in expected_terms if term.casefold() not in extracted]
+        if missing_terms:
+            raise RuntimeError(
+                f"El PDF no contiene secciones obligatorias: {missing_terms}."
+            )
 
 
 def validate_workshop(workshop: Workshop) -> None:
@@ -619,16 +676,45 @@ def resolve_workshop(workshop: Workshop) -> None:
     validate_workshop(workshop)
 
 
+def git_relative_files(*options: str) -> list[Path]:
+    result = subprocess.run(
+        ["git", "ls-files", "-z", *options],
+        cwd=REPO_ROOT,
+        check=True,
+        capture_output=True,
+    )
+    return [
+        Path(os.fsdecode(value))
+        for value in result.stdout.split(b"\0")
+        if value
+    ]
+
+
+def ensure_no_local_artifacts_tracked() -> None:
+    forbidden = [
+        relative
+        for relative in git_relative_files("--cached")
+        if relative.as_posix() == LOCAL_PROFILE_NAME
+        or ".local." in relative.as_posix().casefold()
+    ]
+    if forbidden:
+        formatted = ", ".join(path.as_posix() for path in forbidden)
+        raise RuntimeError(
+            "Git contiene perfiles o entregables reservados para uso local: "
+            f"{formatted}. Retírelos del índice antes de publicar."
+        )
+
+
 def repository_files() -> Iterable[Path]:
-    for path in sorted(REPO_ROOT.rglob("*")):
-        if not path.is_file():
-            continue
-        relative = path.relative_to(REPO_ROOT)
-        if any(part in SKIPPED_DIRS for part in relative.parts):
-            continue
-        if path == PRIVATE_BLOCKLIST:
-            continue
-        yield path
+    relative_files = git_relative_files(
+        "--cached",
+        "--others",
+        "--exclude-standard",
+    )
+    for relative in relative_files:
+        path = REPO_ROOT / relative
+        if path.is_file():
+            yield path
 
 
 def decode_text(data: bytes) -> str:
@@ -815,6 +901,7 @@ def privacy_findings(
 
 
 def audit_privacy(extra_path: Path | None = None) -> None:
+    ensure_no_local_artifacts_tracked()
     private_terms = load_private_terms(extra_path)
     findings: list[str] = []
     checked = 0

@@ -1,0 +1,1 @@
+# Este taller usa exclusivamente la biblioteca estándar de Python para empaquetar.

@@ -26,6 +26,7 @@ TEXT_SUFFIXES = {
     ".csv",
     ".html",
     ".ini",
+    ".js",
     ".json",
     ".md",
     ".py",
@@ -75,6 +76,7 @@ THIRD_FOLDER = "03-GA2-240202501-AA2-EV03-correo-solicitud-empleo"
 FOURTH_FOLDER = "04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto"
 FIFTH_FOLDER = "05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos"
 SIXTH_FOLDER = "06-GA3-220501093-AA3-EV01-bases-teoricas-javascript"
+SEVENTH_FOLDER = "07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript"
 
 WORKSHOPS = {
     1: Workshop(
@@ -278,6 +280,21 @@ WORKSHOPS = {
             ),
         ),
     ),
+    7: Workshop(
+        number=7,
+        code="GA3-220501093-AA3-EV02",
+        title="Resolución de problemas con estructuras de almacenamiento",
+        directory=REPO_ROOT / "talleres" / SEVENTH_FOLDER,
+        generator=workshop_path(SEVENTH_FOLDER, "02_solucion/generar_entrega.py"),
+        requirements=workshop_path(SEVENTH_FOLDER, "02_solucion/requirements.txt"),
+        outputs=(
+            workshop_path(
+                SEVENTH_FOLDER,
+                "03_entrega/GA3-220501093-AA3-EV02_Soluciones_JavaScript_PUBLICO.zip",
+            ),
+        ),
+        exports=(),
+    ),
 }
 
 EXPECTED_PDF_PAGES = {
@@ -320,6 +337,17 @@ EXPECTED_DOCX_FORMATS = {
 }
 
 FIFTH_ARCHIVE_ROOT = WORKSHOPS[5].code
+SEVENTH_ARCHIVE_ROOT = WORKSHOPS[7].code
+SEVENTH_SOURCE_RELATIVES = (
+    "codigo/01_figuras_planas.js",
+    "codigo/02_analisis_edades.js",
+    "codigo/03_mezclar_vectores.js",
+    "codigo/04_encuesta_musical.js",
+    "pruebas/soluciones.test.js",
+    "package.json",
+    "INSTRUCCIONES.md",
+    "FUENTES_Y_DECISIONES.md",
+)
 EXPECTED_DELIVERY_ZIP_MEMBERS = {
     WORKSHOPS[5].outputs[2]: {
         f"{FIFTH_ARCHIVE_ROOT}/LEAME.txt",
@@ -354,7 +382,11 @@ EXPECTED_DELIVERY_ZIP_MEMBERS = {
                 (10, "tabla_multiplicar_decreciente"),
             )
         },
-    }
+    },
+    WORKSHOPS[7].outputs[0]: {
+        f"{SEVENTH_ARCHIVE_ROOT}/{relative}"
+        for relative in SEVENTH_SOURCE_RELATIVES
+    },
 }
 
 
@@ -525,6 +557,39 @@ def validate_delivery_archive(path: Path) -> None:
             for name in names:
                 if name.endswith(".psc") and not archive.read(name).strip():
                     raise RuntimeError(f"Pseudocódigo vacío dentro del ZIP: {name}")
+        if path == WORKSHOPS[7].outputs[0]:
+            for relative in SEVENTH_SOURCE_RELATIVES:
+                archived_name = f"{SEVENTH_ARCHIVE_ROOT}/{relative}"
+                source = workshop_path(SEVENTH_FOLDER, f"02_solucion/{relative}")
+                if archive.read(archived_name) != source.read_bytes():
+                    raise RuntimeError(
+                        f"El componente {relative} del ZIP no coincide con su fuente."
+                    )
+            javascript_files = [
+                name
+                for name in names
+                if name.startswith(f"{SEVENTH_ARCHIVE_ROOT}/codigo/")
+                and name.endswith(".js")
+            ]
+            if len(javascript_files) != 4:
+                raise RuntimeError(
+                    "El ZIP público no contiene exactamente las cuatro soluciones JavaScript."
+                )
+            if any(not archive.read(name).strip() for name in javascript_files):
+                raise RuntimeError("El ZIP público contiene una solución JavaScript vacía.")
+
+
+def validate_javascript_workshop(workshop: Workshop) -> None:
+    if workshop.number != 7:
+        return
+    node = shutil.which("node")
+    if not node:
+        raise RuntimeError("Node.js no está disponible para validar el taller 7.")
+    solution = workshop.directory / "02_solucion"
+    for relative in SEVENTH_SOURCE_RELATIVES:
+        if relative.startswith("codigo/") and relative.endswith(".js"):
+            run([node, "--check", str(solution / relative)])
+    run([node, "--test", str(solution / "pruebas/soluciones.test.js")])
 
 
 def validate_docx_format(path: Path) -> None:
@@ -665,6 +730,7 @@ def validate_workshop(workshop: Workshop) -> None:
             validate_text_word_count(output)
         elif output.suffix.lower() in ARCHIVE_SUFFIXES:
             validate_delivery_archive(output)
+    validate_javascript_workshop(workshop)
     print(f"✓ Taller {workshop.number}: {len(workshop.outputs)} entregables válidos.")
 
 
@@ -695,7 +761,10 @@ def ensure_no_local_artifacts_tracked() -> None:
         relative
         for relative in git_relative_files("--cached")
         if relative.as_posix() == LOCAL_PROFILE_NAME
-        or ".local." in relative.as_posix().casefold()
+        or any(
+            part.casefold().endswith(".local") or ".local." in part.casefold()
+            for part in relative.parts
+        )
     ]
     if forbidden:
         formatted = ", ".join(path.as_posix() for path in forbidden)

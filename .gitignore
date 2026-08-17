@@ -8,3 +8,5 @@ __pycache__/
 /perfil-aprendiz.local.json
 /talleres/*/03_entrega/*_COMPLETO.local.*
 /talleres/*/03_entrega/INFORME_COMPLETO.local.md
+/talleres/*/04_entrega_personalizada.local/
+/talleres/*/02_solucion/codigo/*.local.json*

@@ -6,7 +6,7 @@ sus generadores, crea los PDF, verifica los entregables y aplica una barrera de 
 
 ## Qué contiene
 
-- Un catálogo de los seis talleres y sus productos esperados.
+- Un catálogo de los siete talleres y sus productos esperados.
 - Preparación opcional del entorno Python.
 - Ejecución de los generadores incluidos en cada carpeta `02_solucion`.
 - Exportación atómica de DOCX y PPTX a PDF mediante LibreOffice.
@@ -17,6 +17,8 @@ sus generadores, crea los PDF, verifica los entregables y aplica una barrera de 
   quinto taller.
 - Comprobación de doce páginas, cuatro figuras, autor genérico y secciones obligatorias en
   el sexto taller.
+- Comprobación del manifiesto ZIP, las cuatro fuentes JavaScript y la suite de pruebas del
+  séptimo taller.
 - Auditoría de texto, rutas, XML interno, archivos ZIP y metadatos de PDF, DOCX y PPTX.
 - Detección de secuencias numéricas de alto riesgo, correos, claves privadas, tokens y
   valores confidenciales suministrados localmente.
@@ -29,7 +31,7 @@ Ejecute los comandos desde la raíz del repositorio:
 python3 automatizacion/resolver_evidencias.py listar
 python3 automatizacion/resolver_evidencias.py preparar
 python3 automatizacion/resolver_evidencias.py resolver --todos
-python3 automatizacion/resolver_evidencias.py validar --taller 6
+python3 automatizacion/resolver_evidencias.py validar --taller 7
 python3 automatizacion/resolver_evidencias.py auditar
 ```
 
@@ -55,23 +57,28 @@ Ese archivo está excluido mediante `.gitignore`. También se puede indicar otra
 
 ## Entregas personalizadas locales
 
-El modelo vigente conserva las dos ediciones del sexto taller dentro del mismo
-`03_entrega`. La edición pública tiene autor genérico y es la única que Git puede rastrear.
-La edición completa usa el sufijo `.local`, toma los datos de
-`perfil-aprendiz.local.json` y queda ignorada. La auditoría falla si el perfil o cualquier
-archivo `.local` entra al índice, incluso si se intentó agregarlo de manera forzada.
+El modelo vigente asigna funciones inequívocas a dos directorios:
+
+- `03_entrega` contiene exclusivamente los productos públicos de GitHub.
+- `04_entrega_personalizada.local` contiene exactamente un archivo identificado y listo
+  para cargar en la plataforma SENA.
+
+La edición local toma los datos de `perfil-aprendiz.local.json` y queda ignorada. La
+auditoría falla si el perfil o cualquier componente de una ruta `.local` entra al índice,
+incluso si se intentó agregarlo de manera forzada.
 
 El quinto taller mantiene por compatibilidad su entrega personalizada anterior fuera del
-repositorio. Los talleres nuevos deben usar el modelo contiguo del sexto: dos archivos en
-la misma carpeta de entrega, una frontera explícita de publicación y ningún dato personal
-codificado en el generador.
+repositorio. Los talleres sexto y séptimo ya usan el modelo de archivo local único y ningún
+dato personal está codificado en sus generadores.
 
 ## Cómo agregar otro taller
 
-1. Mantenga la estructura `01_enunciado`, `02_solucion`, `03_entrega` e informe.
+1. Mantenga la estructura pública `01_enunciado`, `02_solucion`, `03_entrega` e informe.
 2. Cree un generador determinista dentro de `02_solucion`.
 3. Registre el generador, las exportaciones y los archivos esperados en `WORKSHOPS`.
-4. Ejecute `resolver` y corrija cualquier fallo antes de publicar.
+4. Si se requiere identificación, genere un solo producto dentro de
+   `04_entrega_personalizada.local`.
+5. Ejecute `resolver` y corrija cualquier fallo antes de publicar.
 
 La automatización reduce errores repetitivos, pero la revisión académica sigue siendo
 necesaria. En particular, una evidencia que evalúe la voz del aprendiz debe conservar su

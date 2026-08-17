@@ -1,0 +1,13 @@
+{
+  "name": "ga3-220501093-aa3-ev02-estructuras-almacenamiento",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cuatro soluciones algorítmicas en JavaScript para la evidencia GA3-220501093-AA3-EV02",
+  "scripts": {
+    "check": "node --check codigo/01_figuras_planas.js && node --check codigo/02_analisis_edades.js && node --check codigo/03_mezclar_vectores.js && node --check codigo/04_encuesta_musical.js",
+    "test": "node --test pruebas/soluciones.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

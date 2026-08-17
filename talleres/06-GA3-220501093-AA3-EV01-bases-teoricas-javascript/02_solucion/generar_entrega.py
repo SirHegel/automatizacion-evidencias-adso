@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera las ediciones pública y completa local de GA3-220501093-AA3-EV01."""
+"""Genera la edición pública y el único PDF personalizado local de la evidencia."""
 
 from __future__ import annotations
 
@@ -25,14 +25,13 @@ WORKSHOP_DIR = SOLUTION_DIR.parent
 REPO_ROOT = SOLUTION_DIR.parents[2]
 RESOURCE_DIR = SOLUTION_DIR / "recursos" / "figuras"
 DELIVERY_DIR = WORKSHOP_DIR / "03_entrega"
+PERSONAL_DELIVERY_DIR = WORKSHOP_DIR / "04_entrega_personalizada.local"
 PROFILE_PATH = REPO_ROOT / "perfil-aprendiz.local.json"
 
 EVIDENCE_CODE = "GA3-220501093-AA3-EV01"
 PUBLIC_STEM = f"{EVIDENCE_CODE}_Bases_Teoricas_JavaScript"
 PUBLIC_DOCX = DELIVERY_DIR / f"{PUBLIC_STEM}.docx"
-LOCAL_DOCX = DELIVERY_DIR / f"{PUBLIC_STEM}_COMPLETO.local.docx"
-LOCAL_PDF = DELIVERY_DIR / f"{PUBLIC_STEM}_COMPLETO.local.pdf"
-LOCAL_REPORT = DELIVERY_DIR / "INFORME_COMPLETO.local.md"
+PERSONAL_PDF = PERSONAL_DELIVERY_DIR / f"ENTREGAR_{EVIDENCE_CODE}.pdf"
 
 FIGURE_PATHS = (
     RESOURCE_DIR / "01_estrategias_ejecucion.png",
@@ -771,7 +770,7 @@ def build_document(output: Path, profile: dict[str, str] | None = None) -> None:
         add_run(paragraph, reference, size=8.7)
     add_subheading(document, "Procedencia de las ilustraciones")
     add_body(document, "Las figuras 1–4 son elaboración propia generada específicamente para esta evidencia. No contienen imágenes, logotipos ni capturas de terceros. Sus pies señalan las fuentes conceptuales que sustentan cada representación.", size=9.1)
-    add_callout(document, "Control de versión", "La edición pública y la edición completa local comparten exactamente este desarrollo académico. Únicamente cambian la portada y los metadatos del documento.", fill=PALE_BLUE, accent="4F8397")
+    add_callout(document, "Control de versión", "La edición pública y la entrega personalizada local comparten exactamente este desarrollo académico. Únicamente cambian la portada y los metadatos del documento.", fill=PALE_BLUE, accent="4F8397")
 
     atomic_save_document(document, output)
 
@@ -791,8 +790,8 @@ def atomic_save_document(document: Document, destination: Path) -> None:
 def export_pdf(source: Path, destination: Path) -> None:
     libreoffice = shutil.which("libreoffice")
     if not libreoffice:
-        raise RuntimeError("LibreOffice es obligatorio para crear el PDF completo local.")
-    with tempfile.TemporaryDirectory(prefix="ev01-local-") as temp_directory:
+        raise RuntimeError("LibreOffice es obligatorio para crear el PDF personalizado.")
+    with tempfile.TemporaryDirectory(prefix="ev01-pdf-") as temp_directory:
         output_directory = Path(temp_directory)
         subprocess.run(
             [libreoffice, "--headless", "--convert-to", "pdf", "--outdir", str(output_directory), str(source)],
@@ -827,11 +826,7 @@ def load_profile() -> dict[str, str] | None:
     return {key: str(value).strip() for key, value in profile.items()}
 
 
-def ensure_local_destination(path: Path) -> None:
-    resolved = path.resolve()
-    delivery = DELIVERY_DIR.resolve()
-    if resolved.parent != delivery or ".local." not in path.name:
-        raise ValueError(f"La entrega completa debe usar un nombre .local dentro de {DELIVERY_DIR}.")
+def ensure_ignored_and_untracked(path: Path) -> None:
     relative = path.relative_to(REPO_ROOT)
     ignored = subprocess.run(
         ["git", "check-ignore", "--no-index", "-q", "--", relative.as_posix()],
@@ -839,7 +834,7 @@ def ensure_local_destination(path: Path) -> None:
         check=False,
     )
     if ignored.returncode != 0:
-        raise ValueError(f"Git no está ignorando el archivo completo local: {relative}")
+        raise ValueError(f"Git no está ignorando la ruta reservada para uso local: {relative}")
     tracked = subprocess.run(
         ["git", "ls-files", "--error-unmatch", "--", relative.as_posix()],
         cwd=REPO_ROOT,
@@ -848,45 +843,46 @@ def ensure_local_destination(path: Path) -> None:
         check=False,
     )
     if tracked.returncode == 0:
-        raise ValueError(f"El archivo completo local ya está rastreado por Git: {relative}")
+        raise ValueError(f"La ruta reservada para uso local ya está rastreada por Git: {relative}")
 
 
-def write_local_report(profile: dict[str, str]) -> None:
-    text = f"""# Informe completo local — {EVIDENCE_CODE}
-
-- Presentado por: {profile['nombre_completo']}
-- {profile.get('tipo_documento', 'Documento')}: {profile['documento']}
-- Programa: {profile['programa']}
-- Institución: {profile['institucion']}
-- Fecha: {profile['fecha']}
-
-## Entregables
-
-- `{LOCAL_DOCX.name}`
-- `{LOCAL_PDF.name}`
-
-La solución cubre los cinco indicadores del instrumento y contiene cuatro ilustraciones
-originales con fuentes. Este informe y los dos entregables tienen uso exclusivamente local;
-la automatización impide que una ruta `.local` sea rastreada por Git.
-"""
-    descriptor, temp_name = tempfile.mkstemp(prefix=".informe-local-", suffix=".md", dir=DELIVERY_DIR)
-    os.close(descriptor)
-    temporary = Path(temp_name)
-    try:
-        temporary.write_text(text, encoding="utf-8")
-        os.replace(temporary, LOCAL_REPORT)
-    finally:
-        temporary.unlink(missing_ok=True)
+def ensure_personal_destination() -> None:
+    if PERSONAL_DELIVERY_DIR.is_symlink() or PERSONAL_PDF.is_symlink():
+        raise ValueError("La ubicación personalizada no puede ser un enlace simbólico.")
+    if PERSONAL_PDF.parent != PERSONAL_DELIVERY_DIR:
+        raise ValueError("El PDF personalizado debe permanecer en su directorio exclusivo.")
+    ensure_ignored_and_untracked(PROFILE_PATH)
+    ensure_ignored_and_untracked(PERSONAL_PDF)
 
 
-def build_local_delivery(profile: dict[str, str]) -> None:
-    for path in (LOCAL_DOCX, LOCAL_PDF, LOCAL_REPORT):
-        ensure_local_destination(path)
-    build_document(LOCAL_DOCX, profile)
-    export_pdf(LOCAL_DOCX, LOCAL_PDF)
-    write_local_report(profile)
-    for path in (PROFILE_PATH, LOCAL_DOCX, LOCAL_PDF, LOCAL_REPORT):
-        path.chmod(0o600)
+def ensure_exclusive_personal_delivery() -> None:
+    entries = list(PERSONAL_DELIVERY_DIR.iterdir())
+    if entries != [PERSONAL_PDF] or not PERSONAL_PDF.is_file() or PERSONAL_PDF.is_symlink():
+        names = sorted(path.name for path in entries)
+        raise RuntimeError(
+            "La ubicación personalizada debe contener exclusivamente "
+            f"{PERSONAL_PDF.name}; contenido actual: {names}."
+        )
+
+
+def build_personal_delivery(profile: dict[str, str]) -> None:
+    ensure_personal_destination()
+    PERSONAL_DELIVERY_DIR.mkdir(parents=True, exist_ok=True)
+    PERSONAL_DELIVERY_DIR.chmod(0o700)
+    unexpected = [path for path in PERSONAL_DELIVERY_DIR.iterdir() if path != PERSONAL_PDF]
+    if unexpected:
+        names = sorted(path.name for path in unexpected)
+        raise RuntimeError(
+            "La ubicación personalizada contiene archivos inesperados; "
+            f"retírelos antes de regenerar: {names}."
+        )
+    with tempfile.TemporaryDirectory(prefix="ev01-personalizada-") as temp_directory:
+        temporary_docx = Path(temp_directory) / f"{EVIDENCE_CODE}.docx"
+        build_document(temporary_docx, profile)
+        export_pdf(temporary_docx, PERSONAL_PDF)
+    PERSONAL_PDF.chmod(0o600)
+    PROFILE_PATH.chmod(0o600)
+    ensure_exclusive_personal_delivery()
 
 
 def main() -> None:
@@ -895,8 +891,8 @@ def main() -> None:
     print(f"Created public: {PUBLIC_DOCX}")
     profile = load_profile()
     if profile:
-        build_local_delivery(profile)
-        print("Created complete local edition beside the public delivery.")
+        build_personal_delivery(profile)
+        print(f"Created single personalized delivery: {PERSONAL_PDF}")
     else:
         print("Local profile absent; only the public edition was generated.")
 

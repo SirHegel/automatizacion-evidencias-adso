@@ -34,7 +34,12 @@ Cada evidencia es autocontenida: el instrumento original, la explicación de có
 │   │   ├── 02_solucion/
 │   │   ├── 03_entrega/
 │   │   └── INFORME_RESOLUCION.md
-│   └── 06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/
+│   ├── 06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/
+│   │   ├── 01_enunciado/
+│   │   ├── 02_solucion/
+│   │   ├── 03_entrega/
+│   │   └── INFORME_RESOLUCION.md
+│   └── 07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/
 │       ├── 01_enunciado/
 │       ├── 02_solucion/
 │       ├── 03_entrega/
@@ -48,8 +53,10 @@ Las carpetas siguen siempre el mismo orden:
 
 1. `01_enunciado`: documento original que define la evidencia.
 2. `02_solucion`: guiones, fuentes, recursos y código utilizado para resolverla.
-3. `03_entrega`: archivos finales editables y exportados.
-4. `INFORME_RESOLUCION.md`: relación entre la rúbrica y la solución realizada.
+3. `03_entrega`: productos públicos sin datos personales, destinados a GitHub.
+4. `04_entrega_personalizada.local`: un único archivo final para entregar al SENA; solo
+   existe localmente cuando la evidencia necesita identificación.
+5. `INFORME_RESOLUCION.md`: relación entre la rúbrica y la solución realizada.
 
 La carpeta `automatizacion` contiene el resolutor que regenera las entregas existentes,
 comprueba su integridad y detiene el proceso si detecta datos personales no autorizados.
@@ -63,7 +70,8 @@ comprueba su integridad y detiene el proceso si detecta datos personales no auto
 | 3 | GA2-240202501-AA2-EV03 | Correo en inglés de solicitud de empleo | Completo | [Ver informe](talleres/03-GA2-240202501-AA2-EV03-correo-solicitud-empleo/INFORME_RESOLUCION.md) | [PDF](talleres/03-GA2-240202501-AA2-EV03-correo-solicitud-empleo/03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.pdf) · [DOCX](talleres/03-GA2-240202501-AA2-EV03-correo-solicitud-empleo/03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.docx) · [TXT](talleres/03-GA2-240202501-AA2-EV03-correo-solicitud-empleo/03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.txt) |
 | 4 | GA3-220501093-AA2-EV01 | Algoritmos de edad y año bisiesto | Completo | [Ver informe](talleres/04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto/INFORME_RESOLUCION.md) | [PDF](talleres/04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto/03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.pdf) · [DOCX](talleres/04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto/03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.docx) |
 | 5 | GA3-220501093-AA2-EV03 | Funciones y procedimientos en algoritmos | Completo; versión pública anonimizada | [Ver informe](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/INFORME_RESOLUCION.md) | [ZIP](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.zip) · [PDF](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.pdf) · [DOCX](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.docx) |
-| 6 | GA3-220501093-AA3-EV01 | Bases teóricas de estructuras de almacenamiento en memoria | Completo; edición pública y completa local | [Ver informe](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/INFORME_RESOLUCION.md) | [PDF](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.pdf) · [DOCX](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.docx) |
+| 6 | GA3-220501093-AA3-EV01 | Bases teóricas de estructuras de almacenamiento en memoria | Completo; publicación saneada y un único PDF local para SENA | [Ver informe](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/INFORME_RESOLUCION.md) | [PDF](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.pdf) · [DOCX](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.docx) |
+| 7 | GA3-220501093-AA3-EV02 | Problemas algorítmicos con estructuras de almacenamiento | Completo; cuatro programas probados y un único ZIP local para SENA | [Ver informe](talleres/07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/INFORME_RESOLUCION.md) | [ZIP público](talleres/07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/03_entrega/GA3-220501093-AA3-EV02_Soluciones_JavaScript_PUBLICO.zip) |
 
 ## Estado del segundo taller
 
@@ -92,10 +100,17 @@ publicación está anonimizada; la entrega personalizada se conserva fuera del r
 
 El documento está completo en DOCX y PDF. En doce páginas desarrolla los cuatro temas de
 la lista de chequeo, incluye ejemplos de JavaScript, cuatro figuras originales, conclusiones,
-matriz de cumplimiento y referencias. Dentro de `03_entrega` se generan dos ediciones con
-el mismo contenido académico: la pública sin datos sensibles y la completa local con los
-datos del aprendiz. Los archivos completos usan el sufijo `.local` y Git los excluye y
-protege de una publicación accidental.
+matriz de cumplimiento y referencias. `03_entrega` conserva solo la edición pública. La
+carpeta ignorada `04_entrega_personalizada.local` contiene exactamente un PDF identificado:
+es el único archivo que se debe seleccionar para entregar esta evidencia al SENA.
+
+## Estado del séptimo taller
+
+El taller resuelve en JavaScript los cuatro problemas de la guía: figuras planas, análisis
+de diez edades, mezcla de vectores ascendentes y encuesta musical persistente. Incluye
+validación de entradas, funciones reutilizables, administración JSON y pruebas automáticas.
+GitHub recibe únicamente el ZIP público; `04_entrega_personalizada.local` contiene un solo
+ZIP con el nombre y los datos del aprendiz, listo para cargar en la plataforma.
 
 ## Resolución y auditoría automáticas
 
@@ -108,5 +123,6 @@ python3 automatizacion/resolver_evidencias.py auditar
 ```
 
 El comando `resolver` ejecuta los generadores documentados, exporta los formatos PDF y
-valida los entregables. El comando `auditar` inspecciona archivos de texto, PDF, DOCX, PPTX
-y el contenido textual de los ZIP; devuelve un código de error si encuentra datos prohibidos.
+valida los entregables. El comando `auditar` inspecciona archivos de texto, JavaScript, PDF,
+DOCX, PPTX y el contenido textual de los ZIP; devuelve un código de error si encuentra datos
+prohibidos.

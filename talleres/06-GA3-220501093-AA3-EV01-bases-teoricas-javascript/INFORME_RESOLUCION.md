@@ -4,8 +4,8 @@
 
 - **Producto:** bases teóricas de estructuras de almacenamiento en memoria.
 - **Entrega pública:** DOCX editable y PDF, sin información personal del aprendiz.
-- **Entrega completa:** DOCX, PDF e informe con sufijo `.local`, en el mismo `03_entrega` y
-  excluidos de Git.
+- **Entrega personalizada local:** un único PDF listo para subir, dentro de
+  `04_entrega_personalizada.local`, excluido de Git.
 - **Cobertura:** cinco de cinco indicadores del instrumento.
 
 ## Interpretación del trabajo
@@ -47,9 +47,10 @@ igualdad estricta, coerción, precedencia, cortocircuito y fusión nula.
 ## Privacidad y publicación
 
 Los archivos públicos no contienen número de documento, contacto, grupo, instructor,
-centro, ciudad ni firma. El perfil y los archivos completos permanecen ignorados por Git.
-La auditoría enumera únicamente archivos rastreados o candidatos a publicación y se detiene
-si detecta que una ruta `.local` fue agregada al índice.
+centro, ciudad ni firma. El perfil y el PDF personalizado permanecen ignorados por Git.
+`03_entrega` contiene exclusivamente productos públicos; la única entrega con los datos del
+aprendiz se genera como `04_entrega_personalizada.local/ENTREGAR_GA3-220501093-AA3-EV01.pdf`.
+La auditoría se detiene si detecta que una ruta local fue agregada al índice.
 
 ## Archivos públicos
 
@@ -68,6 +69,12 @@ python3 automatizacion/resolver_evidencias.py preparar
 python3 automatizacion/resolver_evidencias.py resolver --taller 6
 ```
 
-Cuando existe `perfil-aprendiz.local.json`, el mismo generador produce automáticamente la
-edición completa local junto a la pública. Ningún dato personal está codificado en el
-generador.
+Cuando existe `perfil-aprendiz.local.json`, el mismo generador crea automáticamente el único
+PDF personalizado listo para entregar. El DOCX que incorpora esos datos existe solo de
+forma temporal durante la exportación y no se conserva. Ningún dato personal está
+codificado en el generador.
+
+Un clon de GitHub no incluye el perfil, el directorio personalizado ni su PDF. Para
+reconstruirlo en otro equipo se debe copiar el perfil por un medio privado y ejecutar el
+generador. La entrega local tampoco es una copia de seguridad y puede eliminarse con
+operaciones como `git clean -fdx`.

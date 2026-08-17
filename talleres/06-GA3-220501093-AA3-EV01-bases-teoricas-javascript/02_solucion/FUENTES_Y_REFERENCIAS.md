@@ -33,6 +33,7 @@ debe apoyarse con imágenes ilustrativas y fuentes referenciadas.
 
 ## Modelo de las dos versiones
 
-La solución académica es idéntica. La edición pública usa portada y metadatos genéricos. Si
-existe el perfil local ignorado por Git, el generador crea junto a ella una edición completa
-con sufijo `.local`; la automatización impide que esos archivos entren al índice.
+La solución académica es idéntica. `03_entrega` conserva únicamente la edición pública con
+portada y metadatos genéricos. Si existe el perfil ignorado por Git, el generador crea un
+solo PDF identificado en `04_entrega_personalizada.local`; el DOCX personalizado se usa
+temporalmente y no se conserva. La automatización impide que esa ruta entre al índice.

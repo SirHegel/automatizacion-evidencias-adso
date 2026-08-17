@@ -31,3 +31,10 @@ ejecución y no forma parte de la entrega ni del repositorio.
 - `pruebas/soluciones.test.js`: comprobaciones automatizadas de los cuatro problemas.
 
 Todos los ejemplos incluidos en el código y en las pruebas son sintéticos.
+
+## Documento de entrega
+
+El generador reúne el análisis y el código completo de los cuatro problemas en PDF. La
+carpeta `03_entrega` conserva únicamente la edición pública. Cuando existe el perfil local,
+`04_entrega_personalizada.local` contiene un solo PDF cuyo nombre comienza por `ENTREGAR_`;
+ese es el archivo que debe seleccionarse en la plataforma SENA. No se conserva ningún DOCX.

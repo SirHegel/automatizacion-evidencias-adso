@@ -71,7 +71,7 @@ comprueba su integridad y detiene el proceso si detecta datos personales no auto
 | 4 | GA3-220501093-AA2-EV01 | Algoritmos de edad y año bisiesto | Completo | [Ver informe](talleres/04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto/INFORME_RESOLUCION.md) | [PDF](talleres/04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto/03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.pdf) · [DOCX](talleres/04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto/03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.docx) |
 | 5 | GA3-220501093-AA2-EV03 | Funciones y procedimientos en algoritmos | Completo; versión pública anonimizada | [Ver informe](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/INFORME_RESOLUCION.md) | [ZIP](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.zip) · [PDF](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.pdf) · [DOCX](talleres/05-GA3-220501093-AA2-EV03-funciones-procedimientos-algoritmos/03_entrega/GA3-220501093-AA2-EV03_Taller_Funciones_Procedimientos.docx) |
 | 6 | GA3-220501093-AA3-EV01 | Bases teóricas de estructuras de almacenamiento en memoria | Completo; publicación saneada y un único PDF local para SENA | [Ver informe](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/INFORME_RESOLUCION.md) | [PDF](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.pdf) · [DOCX](talleres/06-GA3-220501093-AA3-EV01-bases-teoricas-javascript/03_entrega/GA3-220501093-AA3-EV01_Bases_Teoricas_JavaScript.docx) |
-| 7 | GA3-220501093-AA3-EV02 | Problemas algorítmicos con estructuras de almacenamiento | Completo; cuatro programas probados y un único ZIP local para SENA | [Ver informe](talleres/07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/INFORME_RESOLUCION.md) | [ZIP público](talleres/07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/03_entrega/GA3-220501093-AA3-EV02_Soluciones_JavaScript_PUBLICO.zip) |
+| 7 | GA3-220501093-AA3-EV02 | Problemas algorítmicos con estructuras de almacenamiento | Completo; cuatro programas probados y un único PDF local para SENA | [Ver informe](talleres/07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/INFORME_RESOLUCION.md) | [PDF público](talleres/07-GA3-220501093-AA3-EV02-estructuras-almacenamiento-javascript/03_entrega/GA3-220501093-AA3-EV02_Resolucion_Estructuras_Almacenamiento.pdf) |
 
 ## Estado del segundo taller
 
@@ -109,8 +109,9 @@ es el único archivo que se debe seleccionar para entregar esta evidencia al SEN
 El taller resuelve en JavaScript los cuatro problemas de la guía: figuras planas, análisis
 de diez edades, mezcla de vectores ascendentes y encuesta musical persistente. Incluye
 validación de entradas, funciones reutilizables, administración JSON y pruebas automáticas.
-GitHub recibe únicamente el ZIP público; `04_entrega_personalizada.local` contiene un solo
-ZIP con el nombre y los datos del aprendiz, listo para cargar en la plataforma.
+El PDF integra el análisis, los cuatro códigos completos y la evidencia de las pruebas.
+GitHub recibe únicamente el PDF público; `04_entrega_personalizada.local` contiene un solo
+PDF con el nombre y los datos del aprendiz, listo para cargar en la plataforma.
 
 ## Resolución y auditoría automáticas
 

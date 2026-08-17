@@ -6,11 +6,13 @@ sus generadores, crea los PDF, verifica los entregables y aplica una barrera de 
 
 ## Qué contiene
 
-- Un catálogo de los dos talleres y sus productos esperados.
+- Un catálogo de los cuatro talleres y sus productos esperados.
 - Preparación opcional del entorno Python.
 - Ejecución de los generadores incluidos en cada carpeta `02_solucion`.
 - Exportación atómica de DOCX y PPTX a PDF mediante LibreOffice.
 - Comprobación de integridad de archivos Office y cantidad de páginas de cada PDF.
+- Control de las 200–400 palabras, Arial 12 e interlineado 1,5 exigidos en el tercer taller.
+- Comprobación de las diez páginas y los dos diagramas incrustados del cuarto taller.
 - Auditoría de texto, rutas, XML interno y metadatos de PDF, DOCX y PPTX.
 - Detección de secuencias numéricas de alto riesgo, correos, claves privadas, tokens y
   valores confidenciales suministrados localmente.
@@ -23,7 +25,7 @@ Ejecute los comandos desde la raíz del repositorio:
 python3 automatizacion/resolver_evidencias.py listar
 python3 automatizacion/resolver_evidencias.py preparar
 python3 automatizacion/resolver_evidencias.py resolver --todos
-python3 automatizacion/resolver_evidencias.py validar --taller 2
+python3 automatizacion/resolver_evidencias.py validar --taller 4
 python3 automatizacion/resolver_evidencias.py auditar
 ```
 

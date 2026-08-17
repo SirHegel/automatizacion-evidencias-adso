@@ -28,6 +28,7 @@ TEXT_SUFFIXES = {
     ".json",
     ".md",
     ".py",
+    ".psc",
     ".rels",
     ".rst",
     ".sh",
@@ -38,7 +39,10 @@ TEXT_SUFFIXES = {
     ".yml",
 }
 OFFICE_SUFFIXES = {".docx", ".pptx", ".xlsx"}
-ALLOWED_LONG_NUMBERS = {"240202501"}  # Código público del resultado de aprendizaje.
+ALLOWED_LONG_NUMBERS = {
+    "220501093",
+    "240202501",
+}  # Códigos públicos de resultados de aprendizaje.
 
 
 @dataclass(frozen=True)
@@ -65,6 +69,8 @@ def workshop_path(folder: str, relative: str) -> Path:
 
 FIRST_FOLDER = "01-GA2-240202501-AA1-EV03-cronica-alan-turing"
 SECOND_FOLDER = "02-GA2-240202501-AA2-EV02-presentacion-monserrate"
+THIRD_FOLDER = "03-GA2-240202501-AA2-EV03-correo-solicitud-empleo"
+FOURTH_FOLDER = "04-GA3-220501093-AA2-EV01-algoritmos-edad-bisiesto"
 
 WORKSHOPS = {
     1: Workshop(
@@ -140,14 +146,89 @@ WORKSHOPS = {
             ),
         ),
     ),
+    3: Workshop(
+        number=3,
+        code="GA2-240202501-AA2-EV03",
+        title="Correo en inglés de solicitud de empleo",
+        directory=REPO_ROOT / "talleres" / THIRD_FOLDER,
+        generator=workshop_path(THIRD_FOLDER, "02_solucion/generar_entrega.py"),
+        requirements=workshop_path(THIRD_FOLDER, "02_solucion/requirements.txt"),
+        outputs=(
+            workshop_path(
+                THIRD_FOLDER,
+                "03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.docx",
+            ),
+            workshop_path(
+                THIRD_FOLDER,
+                "03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.pdf",
+            ),
+            workshop_path(
+                THIRD_FOLDER,
+                "03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.txt",
+            ),
+        ),
+        exports=(
+            PdfExport(
+                source=workshop_path(
+                    THIRD_FOLDER,
+                    "03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.docx",
+                ),
+                destination=workshop_path(
+                    THIRD_FOLDER,
+                    "03_entrega/GA2-240202501-AA2-EV03_Correo_Solicitud_Empleo.pdf",
+                ),
+            ),
+        ),
+    ),
+    4: Workshop(
+        number=4,
+        code="GA3-220501093-AA2-EV01",
+        title="Algoritmos de edad y año bisiesto",
+        directory=REPO_ROOT / "talleres" / FOURTH_FOLDER,
+        generator=workshop_path(FOURTH_FOLDER, "02_solucion/generar_entrega.py"),
+        requirements=workshop_path(FOURTH_FOLDER, "02_solucion/requirements.txt"),
+        outputs=(
+            workshop_path(
+                FOURTH_FOLDER,
+                "03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.docx",
+            ),
+            workshop_path(
+                FOURTH_FOLDER,
+                "03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.pdf",
+            ),
+        ),
+        exports=(
+            PdfExport(
+                source=workshop_path(
+                    FOURTH_FOLDER,
+                    "03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.docx",
+                ),
+                destination=workshop_path(
+                    FOURTH_FOLDER,
+                    "03_entrega/GA3-220501093-AA2-EV01_Fundamentos_Programacion_Estructurada.pdf",
+                ),
+            ),
+        ),
+    ),
 }
 
 EXPECTED_PDF_PAGES = {
     WORKSHOPS[1].outputs[1]: 3,
     WORKSHOPS[2].outputs[1]: 8,
     WORKSHOPS[2].outputs[3]: 8,
+    WORKSHOPS[3].outputs[1]: 1,
+    WORKSHOPS[4].outputs[1]: 10,
 }
 EXPECTED_PPTX_SLIDES = {WORKSHOPS[2].outputs[0]: 8}
+EXPECTED_DOCX_IMAGES = {WORKSHOPS[4].outputs[0]: 2}
+EXPECTED_TEXT_WORD_RANGES = {WORKSHOPS[3].outputs[2]: (200, 400)}
+EXPECTED_DOCX_FORMATS = {
+    WORKSHOPS[3].outputs[0]: {
+        "font": "Arial",
+        "size_half_points": "24",
+        "line_twips": "360",
+    }
+}
 
 
 def run(command: list[str], *, capture: bool = False) -> subprocess.CompletedProcess[str]:
@@ -242,6 +323,100 @@ def validate_zip(path: Path) -> None:
                     f"Cantidad de diapositivas inesperada en {path}: "
                     f"{slides}, se esperaban {expected_slides}."
                 )
+        expected_images = EXPECTED_DOCX_IMAGES.get(path)
+        if expected_images is not None:
+            images = sum(
+                member.startswith("word/media/") and not member.endswith("/")
+                for member in members
+            )
+            if images != expected_images:
+                raise RuntimeError(
+                    f"Cantidad de imágenes inesperada en {path}: "
+                    f"{images}, se esperaban {expected_images}."
+                )
+
+
+def validate_docx_format(path: Path) -> None:
+    expected = EXPECTED_DOCX_FORMATS.get(path)
+    if expected is None:
+        return
+
+    word_namespace = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+
+    def tag(name: str) -> str:
+        return f"{{{word_namespace}}}{name}"
+
+    def attribute(name: str) -> str:
+        return f"{{{word_namespace}}}{name}"
+
+    with zipfile.ZipFile(path) as archive:
+        root = ElementTree.fromstring(archive.read("word/document.xml"))
+
+    text_runs = 0
+    wrong_fonts: set[str] = set()
+    wrong_sizes: set[str] = set()
+    for run in root.iter(tag("r")):
+        visible_text = "".join(
+            node.text or "" for node in run.iter(tag("t"))
+        ).strip()
+        if not visible_text:
+            continue
+        text_runs += 1
+        properties = run.find(tag("rPr"))
+        fonts = properties.find(tag("rFonts")) if properties is not None else None
+        size = properties.find(tag("sz")) if properties is not None else None
+        font_name = fonts.get(attribute("ascii"), "") if fonts is not None else ""
+        font_size = size.get(attribute("val"), "") if size is not None else ""
+        if font_name != expected["font"]:
+            wrong_fonts.add(font_name or "sin definir")
+        if font_size != expected["size_half_points"]:
+            wrong_sizes.add(font_size or "sin definir")
+
+    wrong_lines: set[str] = set()
+    text_paragraphs = 0
+    for paragraph in root.iter(tag("p")):
+        visible_text = "".join(
+            node.text or "" for node in paragraph.iter(tag("t"))
+        ).strip()
+        if not visible_text:
+            continue
+        text_paragraphs += 1
+        properties = paragraph.find(tag("pPr"))
+        spacing = properties.find(tag("spacing")) if properties is not None else None
+        line_value = spacing.get(attribute("line"), "") if spacing is not None else ""
+        line_rule = spacing.get(attribute("lineRule"), "") if spacing is not None else ""
+        if line_value != expected["line_twips"] or line_rule != "auto":
+            wrong_lines.add(f"{line_value or 'sin definir'}/{line_rule or 'sin definir'}")
+
+    if not text_runs or not text_paragraphs:
+        raise RuntimeError(f"El DOCX no contiene texto verificable: {path}")
+    if wrong_fonts or wrong_sizes or wrong_lines:
+        details = []
+        if wrong_fonts:
+            details.append(f"fuentes {sorted(wrong_fonts)}")
+        if wrong_sizes:
+            details.append(f"tamaños {sorted(wrong_sizes)}")
+        if wrong_lines:
+            details.append(f"interlineados {sorted(wrong_lines)}")
+        raise RuntimeError(
+            f"Formato académico inesperado en {path}: {', '.join(details)}."
+        )
+
+
+def validate_text_word_count(path: Path) -> None:
+    expected = EXPECTED_TEXT_WORD_RANGES.get(path)
+    if expected is None:
+        return
+    text = path.read_text(encoding="utf-8")
+    _, separator, message = text.partition("\n\n")
+    countable_text = message if separator else text
+    count = len(re.findall(r"[A-Za-z]+(?:['’][A-Za-z]+)?", countable_text))
+    minimum, maximum = expected
+    if not minimum <= count <= maximum:
+        raise RuntimeError(
+            f"Extensión inesperada en {path}: {count} palabras; "
+            f"se esperaban entre {minimum} y {maximum}."
+        )
 
 
 def validate_pdf(path: Path) -> None:
@@ -270,8 +445,12 @@ def validate_workshop(workshop: Workshop) -> None:
             raise RuntimeError(f"Entregable ausente o vacío: {output}")
         if output.suffix.lower() in OFFICE_SUFFIXES:
             validate_zip(output)
+            if output.suffix.lower() == ".docx":
+                validate_docx_format(output)
         elif output.suffix.lower() == ".pdf":
             validate_pdf(output)
+        elif output.suffix.lower() == ".txt":
+            validate_text_word_count(output)
     print(f"✓ Taller {workshop.number}: {len(workshop.outputs)} entregables válidos.")
 
 

@@ -977,11 +977,21 @@ def load_private_terms(extra_path: Path | None) -> list[str]:
     values: list[str] = []
     env_values = os.environ.get("EVIDENCIAS_BLOCKLIST", "")
     values.extend(part.strip() for part in env_values.split(os.pathsep) if part.strip())
-    path = extra_path or (PRIVATE_BLOCKLIST if PRIVATE_BLOCKLIST.is_file() else None)
-    if path:
+
+    if extra_path is not None and (extra_path.is_absolute() or extra_path.parts != (".privacidad.local",)):
+        raise RuntimeError(
+            "--lista-privada solo admite .privacidad.local en la raíz del repositorio."
+        )
+
+    if PRIVATE_BLOCKLIST.is_symlink():
+        raise RuntimeError(".privacidad.local debe ser un archivo regular, no un enlace simbólico.")
+    if PRIVATE_BLOCKLIST.is_file():
+        expected = REPO_ROOT.resolve() / ".privacidad.local"
+        if PRIVATE_BLOCKLIST.resolve(strict=True) != expected:
+            raise RuntimeError(".privacidad.local debe permanecer dentro del repositorio.")
         values.extend(
             line.strip()
-            for line in path.read_text(encoding="utf-8").splitlines()
+            for line in PRIVATE_BLOCKLIST.read_text(encoding="utf-8").splitlines()
             if line.strip() and not line.lstrip().startswith("#")
         )
     return list(dict.fromkeys(values))
@@ -1100,7 +1110,8 @@ def build_parser() -> argparse.ArgumentParser:
     audit_parser.add_argument(
         "--lista-privada",
         type=Path,
-        help="archivo local ignorado por Git, con un valor confidencial por línea",
+        metavar=".privacidad.local",
+        help="confirma el archivo local fijo .privacidad.local de la raíz",
     )
     return parser
 

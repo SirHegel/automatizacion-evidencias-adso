@@ -27,6 +27,9 @@ jobs:
       - name: Comprobar automatizador
         run: python3 -m py_compile automatizacion/resolver_evidencias.py
 
+      - name: Probar límites de seguridad
+        run: python3 -m unittest automatizacion/test_seguridad.py
+
       - name: Validar entregables
         run: python3 automatizacion/resolver_evidencias.py validar --todos
 

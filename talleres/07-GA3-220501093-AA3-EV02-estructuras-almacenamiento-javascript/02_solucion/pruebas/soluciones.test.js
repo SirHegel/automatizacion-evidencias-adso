@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require("node:assert/strict");
+const { spawnSync } = require("node:child_process");
 const { mkdtemp, readFile, rm, stat, writeFile } = require("node:fs/promises");
 const { tmpdir } = require("node:os");
 const path = require("node:path");
@@ -338,4 +339,23 @@ test("P4 rechaza JSON dañado y datos inválidos antes de persistir", async (t) 
     RangeError,
   );
   await assert.rejects(readFile(archivoEncuesta, "utf8"), { code: "ENOENT" });
+});
+
+test("P4 no permite redirigir la persistencia mediante el entorno", async (t) => {
+  const directorio = await conDirectorioTemporal(t);
+  const archivoExterno = path.join(directorio, "no-debe-leerse.json");
+  const contenidoCentinela = "{contenido deliberadamente inválido";
+  await writeFile(archivoExterno, contenidoCentinela, "utf8");
+
+  const programa = path.join(__dirname, "../codigo/04_encuesta_musical.js");
+  const ejecucion = spawnSync(process.execPath, [programa], {
+    input: "0\n",
+    encoding: "utf8",
+    timeout: 5_000,
+    env: { ...process.env, ENCUESTA_ARCHIVO: archivoExterno },
+  });
+
+  assert.equal(ejecucion.status, 0, ejecucion.stderr);
+  assert.equal(await readFile(archivoExterno, "utf8"), contenidoCentinela);
+  assert.doesNotMatch(ejecucion.stderr, /información válida/);
 });

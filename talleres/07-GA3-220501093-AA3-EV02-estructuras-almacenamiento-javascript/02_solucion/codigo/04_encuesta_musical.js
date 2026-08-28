@@ -362,9 +362,11 @@ async function ejecutarMenu(interfaz, rutaArchivo) {
 
 async function main() {
   const interfaz = readline.createInterface({ input, output });
-  const rutaArchivo = process.env.ENCUESTA_ARCHIVO || ARCHIVO_PREDETERMINADO;
   try {
-    await ejecutarMenu(interfaz, rutaArchivo);
+    // El ejercicio persiste únicamente en su archivo local ignorado. Una
+    // variable de entorno no debe poder redirigir las lecturas o escrituras a
+    // archivos del sistema, aunque el programa se ejecute desde otra carpeta.
+    await ejecutarMenu(interfaz, ARCHIVO_PREDETERMINADO);
   } finally {
     interfaz.close();
   }

@@ -58,8 +58,9 @@ Para comprobar valores confidenciales concretos sin publicarlos en Git, cree el 
 python3 automatizacion/resolver_evidencias.py auditar
 ```
 
-Ese archivo está excluido mediante `.gitignore`. También se puede indicar otra ruta con
-`--lista-privada`. Nunca se deben guardar identificadores ni credenciales dentro del código.
+Ese archivo está excluido mediante `.gitignore`. Por seguridad, `--lista-privada` solo
+acepta ese nombre fijo en la raíz y rechaza rutas externas o enlaces simbólicos. Nunca se
+deben guardar identificadores ni credenciales dentro del código.
 
 ## Entregas personalizadas locales
 
